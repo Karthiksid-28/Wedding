@@ -28,6 +28,8 @@
         </div>
     </div>
 
+    <audio id="bgMusic" src="audio/music.mp3" preload="auto"></audio>
+
     <div class="floating-hearts" id="floatingHearts"></div>
     <div class="firework-layer" id="fireworkLayer"></div>
 
@@ -42,10 +44,9 @@
         </div>
         <div class="content">
             <h3>With Hearts Full of Joy</h3>
-            <h3>The Families of <br>
-                <h2>Mr.J.Anthony Raj & Mrs.A.Hema <br> Mr.R.Chinnathambi & Mrs.C.Marithangam</h2>
+            <h3>The Families of</h3>
+            <p class="family-names">Mr.J.Anthony Raj & Mrs.A.Hema<br>Mr.R.Chinnathambi & Mrs.C.Marithangam</p>
             <h3>cordially request the honour of your presence and blessings at the wedding ceremony of their beloved children</h3>
-            </h3>
             <div class="names-container">
                 <h1>Siddhikarthik</h1>
                 <h2>Weds</h2>
@@ -139,10 +140,21 @@
 
     <script>
         /* ---------------- Royal Scroll Opening ---------------- */
+        function playBackgroundMusic() {
+            const bgMusic = document.getElementById('bgMusic');
+            if (bgMusic && bgMusic.paused) {
+                bgMusic.volume = 0.7;
+                bgMusic.play().catch(() => {
+                    // Some browsers may block autoplay without interaction, but this is inside a click handler.
+                });
+            }
+        }
+
         function closeScroll(){
             const overlay = document.getElementById('scrollOverlay');
             overlay.classList.add('hidden');
             document.body.style.overflow = '';
+            playBackgroundMusic();
         }
         document.body.style.overflow = 'hidden';
         document.getElementById('scrollOverlay').addEventListener('click', closeScroll);
@@ -215,21 +227,30 @@
         function petalSVG(color){
             return `<svg width="18" height="18" viewBox="0 0 24 24"><path d="M12 2C8 2 6 6 8 10c-4-2-8 0-8 4s4 6 8 4c-2 4 0 8 4 8s6-4 4-8c4 2 8 0 8-4s-4-6-8-4c2-4 0-8-4-8z" fill="${color}" opacity="0.85"/></svg>`;
         }
+
+        function heartSVG(color){
+            return `<svg width="18" height="18" viewBox="0 0 24 24"><path d="M12 20.5s-7.5-4.9-9.3-8.4C1 9.9 1.5 6.7 4.2 5.1c2.2-1.3 4.8-.7 6.3 1.1 1.5-1.8 4.1-2.4 6.3-1.1 2.7 1.6 3.2 4.8 1.5 7.0C19.5 15.6 12 20.5 12 20.5z" fill="${color}" opacity="0.9"/></svg>`;
+        }
+
         function createFallingPetals() {
-            const colors = ['#ea4d97', '#f2a63c', '#ffc766', '#fdf3e8'];
-            const total = 22;
+            const heartColors = ['#ff4d6d', '#ff6b6b', '#ff3b5c', '#ff7f50', '#ffb3c1'];
+            const petalColors = ['#f2a63c', '#ffc766', '#fdf3e8', '#ea4d97'];
+            const total = 24;
             for (let i = 0; i < total; i++) {
-                const petal = document.createElement('div');
-                petal.classList.add('petal');
-                petal.innerHTML = petalSVG(colors[Math.floor(Math.random() * colors.length)]);
-                const size = 12 + Math.random() * 14;
-                petal.style.left = Math.random() * 100 + 'vw';
-                petal.style.width = size + 'px';
-                petal.style.setProperty('--drift', (Math.random() * 120 - 60) + 'px');
-                const duration = 9 + Math.random() * 9;
-                petal.style.animationDuration = duration + 's';
-                petal.style.animationDelay = (Math.random() * duration) + 's';
-                document.body.appendChild(petal);
+                const decoration = document.createElement('div');
+                const useHeart = Math.random() < 0.7;
+                decoration.classList.add(useHeart ? 'falling-heart' : 'petal');
+                decoration.innerHTML = useHeart
+                    ? heartSVG(heartColors[Math.floor(Math.random() * heartColors.length)])
+                    : petalSVG(petalColors[Math.floor(Math.random() * petalColors.length)]);
+                const size = useHeart ? 16 + Math.random() * 12 : 10 + Math.random() * 8;
+                decoration.style.left = Math.random() * 100 + 'vw';
+                decoration.style.width = size + 'px';
+                decoration.style.setProperty('--drift', (Math.random() * 120 - 60) + 'px');
+                const duration = 7 + Math.random() * 4;
+                decoration.style.animationDuration = duration + 's';
+                decoration.style.animationDelay = (Math.random() * duration) + 's';
+                document.body.appendChild(decoration);
             }
         }
 
