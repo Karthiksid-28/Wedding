@@ -53,6 +53,13 @@ body{
     }
 }
 
+/* Mobile Devices */
+@media only screen and (max-width: 767px) {
+    .scroll-paper {
+        padding: 10% 0 0 0 !important;
+    }
+}
+
 /* ============================================================
    ROYAL SCROLL OPENING OVERLAY
    ============================================================ */
